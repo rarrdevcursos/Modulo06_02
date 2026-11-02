@@ -1,0 +1,120 @@
+@page "/fetchproducts"
+@inject IProductoService ProductoService
+@inject ILogger<FetchProducts> Logger
+
+<PageTitle>Productos</PageTitle>
+
+<div class="page-header">
+    <div>
+        <MudText Typo="Typo.overline" Class="page-eyebrow">Integración API</MudText>
+        <MudText Typo="Typo.h4" Class="font-weight-bold">Catálogo de productos</MudText>
+        <MudText Typo="Typo.body2" Class="mud-text-secondary">
+            Datos en vivo desde <code>/api/products</code>.
+        </MudText>
+    </div>
+    <MudButton Variant="Variant.Outlined"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Refresh"
+               OnClick="CargarProductosAsync"
+               Disabled="@cargando">
+        Actualizar
+    </MudButton>
+</div>
+
+@if (error is not null)
+{
+    <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="mb-4">@error</MudAlert>
+}
+
+@if (cargando)
+{
+    <MudPaper Elevation="0" Class="table-card pa-10 d-flex flex-column align-center">
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        <MudText Typo="Typo.body2" Class="mud-text-secondary mt-4">Cargando productos…</MudText>
+    </MudPaper>
+}
+else if (productos is { Count: > 0 })
+{
+    <MudPaper Elevation="0" Class="table-card">
+        <MudTable T="Producto"
+                  Items="@productos"
+                  Hover="true"
+                  Breakpoint="Breakpoint.Sm"
+                  Elevation="0">
+            <HeaderContent>
+                <MudTh>Producto</MudTh>
+                <MudTh>Precio</MudTh>
+                <MudTh>Stock</MudTh>
+                <MudTh>Estado</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Producto">
+                    <div class="d-flex align-center">
+                        <MudAvatar Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small" Class="mr-3">
+                            @context.Nombre.Substring(0, 1).ToUpperInvariant()
+                        </MudAvatar>
+                        <div>
+                            <MudText Typo="Typo.body2" Class="font-weight-medium">@context.Nombre</MudText>
+                            <MudText Typo="Typo.caption" Class="mud-text-secondary">SKU-@context.Id.ToString("D4")</MudText>
+                        </div>
+                    </div>
+                </MudTd>
+                <MudTd DataLabel="Precio">
+                    <MudText Typo="Typo.body2" Class="font-weight-bold">@FormatearPrecio(context.Precio)</MudText>
+                </MudTd>
+                <MudTd DataLabel="Stock">
+                    <MudText Typo="Typo.body2">@context.Stock unidades</MudText>
+                </MudTd>
+                <MudTd DataLabel="Estado">
+                    <MudChip T="string"
+                             Size="Size.Small"
+                             Variant="Variant.Filled"
+                             Color="@(context.Stock > 0 ? Color.Success : Color.Error)">
+                        @(context.Stock > 0 ? "Disponible" : "Agotado")
+                    </MudChip>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudPaper>
+}
+else if (error is null)
+{
+    <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
+        No hay productos disponibles por el momento.
+    </MudAlert>
+}
+
+@code {
+    private IReadOnlyList<Producto>? productos;
+    private bool cargando = true;
+    private string? error;
+
+    protected override Task OnInitializedAsync() => CargarProductosAsync();
+
+    private async Task CargarProductosAsync()
+    {
+        cargando = true;
+        error = null;
+
+        try
+        {
+            productos = await ProductoService.ObtenerProductosAsync();
+        }
+        catch (ProductoServiceException ex)
+        {
+            error = ex.Message;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error inesperado al cargar los productos.");
+            error = "Ocurrió un error inesperado al cargar los productos.";
+        }
+        finally
+        {
+            cargando = false;
+        }
+    }
+
+    private static string FormatearPrecio(double precio) =>
+        string.Format(CultureInfo.InvariantCulture, "${0:N2}", precio);
+}

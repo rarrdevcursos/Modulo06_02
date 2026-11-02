@@ -1,0 +1,64 @@
+﻿@page "/counter"
+
+<PageTitle>Contador</PageTitle>
+
+<div class="page-header">
+    <div>
+        <MudText Typo="Typo.overline" Class="page-eyebrow">Interactividad</MudText>
+        <MudText Typo="Typo.h4" Class="font-weight-bold">Contador</MudText>
+        <MudText Typo="Typo.body2" Class="mud-text-secondary">Ejemplo del estado local de un componente Blazor.</MudText>
+    </div>
+</div>
+
+<MudGrid Spacing="4">
+    <MudItem xs="12" md="7">
+        <MudPaper Elevation="0" Class="stat-card pa-8">
+            <MudText Typo="Typo.overline" Class="page-eyebrow">Interacciones</MudText>
+            <MudText Typo="Typo.h2" Class="counter-value mt-2">@currentCount</MudText>
+            <MudText Typo="Typo.body2" Class="mud-text-secondary mt-2">
+                Cada clic incrementa el estado en memoria del componente.
+            </MudText>
+            <div class="d-flex flex-wrap mt-6" style="gap: 0.75rem;">
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.Add"
+                           OnClick="IncrementCount">
+                    Incrementar
+                </MudButton>
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Default"
+                           StartIcon="@Icons.Material.Filled.RestartAlt"
+                           OnClick="ResetCount"
+                           Disabled="@(currentCount == 0)">
+                    Reiniciar
+                </MudButton>
+            </div>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" md="5">
+        <MudPaper Elevation="0" Class="stat-card pa-6">
+            <div class="d-flex align-center mb-3">
+                <span class="stat-icon mr-3"><MudIcon Icon="@Icons.Material.Filled.Info" /></span>
+                <MudText Typo="Typo.subtitle1" Class="font-weight-bold">¿Cómo funciona?</MudText>
+            </div>
+            <MudText Typo="Typo.body2" Class="mud-text-secondary">
+                Blazor actualiza el DOM automáticamente cuando cambia el estado del componente.
+                No se requiere JavaScript ni recargar la página.
+            </MudText>
+            <MudDivider Class="my-4" />
+            <div class="d-flex align-center justify-space-between">
+                <MudText Typo="Typo.body2" Class="mud-text-secondary">Estado</MudText>
+                <MudChip T="string" Size="Size.Small" Color="Color.Success" Variant="Variant.Filled">Activo</MudChip>
+            </div>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private int currentCount;
+
+    private void IncrementCount() => currentCount++;
+
+    private void ResetCount() => currentCount = 0;
+}

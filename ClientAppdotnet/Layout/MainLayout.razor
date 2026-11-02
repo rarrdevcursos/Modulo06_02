@@ -1,0 +1,67 @@
+﻿@inherits LayoutComponentBase
+@inject IJSRuntime JS
+
+<MudThemeProvider @bind-IsDarkMode="_isDarkMode" Theme="AppTheme.Default" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="0" Class="px-4">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Color="Color.Inherit"
+                       Edge="Edge.Start"
+                       OnClick="ToggleDrawer"
+                       aria-label="Abrir menú" />
+        <div class="d-flex flex-column ml-3">
+            <MudText Typo="Typo.subtitle1" Class="font-weight-bold" Style="line-height: 1.15;">ClientAppdotnet</MudText>
+            <MudText Typo="Typo.caption" Style="opacity: 0.65; line-height: 1.15;">Panel de control</MudText>
+        </div>
+        <MudSpacer />
+        <MudIconButton Icon="@(_isDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)"
+                       Color="Color.Inherit"
+                       OnClick="ToggleTheme"
+                       aria-label="Cambiar tema" />
+        <MudAvatar Color="Color.Secondary" Variant="Variant.Filled" Size="Size.Medium" Class="ml-3">AD</MudAvatar>
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="_drawerOpen"
+               Variant="DrawerVariant.Responsive"
+               Elevation="0"
+               Width="264px">
+        <NavMenu />
+    </MudDrawer>
+
+    <MudMainContent Class="main-content">
+        <div class="page-container">
+            @Body
+        </div>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool _drawerOpen;
+    private bool _isDarkMode;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        // El drawer responsive se cierra durante la navegación inicial.
+        // Se abre solo en escritorio para no tapar el contenido en móvil.
+        var isDesktop = await JS.InvokeAsync<bool>("appInterop.isDesktop");
+
+        if (isDesktop)
+        {
+            _drawerOpen = true;
+            StateHasChanged();
+        }
+    }
+
+    private void ToggleDrawer() => _drawerOpen = !_drawerOpen;
+
+    private void ToggleTheme() => _isDarkMode = !_isDarkMode;
+}

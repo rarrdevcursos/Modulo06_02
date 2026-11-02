@@ -1,0 +1,147 @@
+﻿@page "/"
+
+<PageTitle>Inicio</PageTitle>
+
+<div class="page-header">
+    <div>
+        <MudText Typo="Typo.overline" Class="page-eyebrow">Panel de control</MudText>
+        <MudText Typo="Typo.h4" Class="font-weight-bold">Resumen general</MudText>
+        <MudText Typo="Typo.body2" Class="mud-text-secondary">Estado de la aplicación y accesos rápidos.</MudText>
+    </div>
+    <MudButton Href="fetchproducts"
+               Variant="Variant.Filled"
+               Color="Color.Primary"
+               EndIcon="@Icons.Material.Filled.ArrowForward">
+        Ver productos
+    </MudButton>
+</div>
+
+<MudPaper Elevation="0" Class="hero-panel pa-8 mb-6">
+    <MudGrid Spacing="4" Class="align-center">
+        <MudItem xs="12" md="8">
+            <MudChip T="string" Size="Size.Small" Class="hero-chip mb-4">Blazor WebAssembly · .NET 10</MudChip>
+            <MudText Typo="Typo.h3" Class="font-weight-bold mb-3">Aplicación full stack lista para producción</MudText>
+            <MudText Typo="Typo.body1" Style="color: #cbd5e1; max-width: 640px;">
+                Cliente Blazor conectado a una Minimal API con manejo de errores, timeouts y una interfaz
+                profesional basada en MudBlazor.
+            </MudText>
+            <div class="d-flex flex-wrap mt-6" style="gap: 0.75rem;">
+                <MudButton Href="fetchproducts"
+                           Variant="Variant.Filled"
+                           Color="Color.Secondary"
+                           StartIcon="@Icons.Material.Filled.Inventory2">
+                    Explorar catálogo
+                </MudButton>
+                <MudButton Href="https://learn.microsoft.com/aspnet/core/blazor/"
+                           Target="_blank"
+                           Variant="Variant.Outlined"
+                           Style="color: #e2e8f0; border-color: rgba(255, 255, 255, 0.3);"
+                           EndIcon="@Icons.Material.Filled.OpenInNew">
+                    Documentación
+                </MudButton>
+            </div>
+        </MudItem>
+        <MudItem xs="12" md="4" Class="d-flex justify-center align-center">
+            <MudIcon Icon="@Icons.Material.Filled.Insights"
+                     Style="font-size: 10rem; color: rgba(125, 211, 252, 0.3);" />
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+<MudGrid Spacing="4" Class="mb-6">
+    <MudItem xs="12" sm="6" lg="3">
+        <MudPaper Elevation="0" Class="stat-card pa-5">
+            <div class="d-flex align-center justify-space-between">
+                <span class="stat-icon"><MudIcon Icon="@Icons.Material.Filled.Code" /></span>
+                <MudChip T="string" Size="Size.Small" Color="Color.Primary" Variant="Variant.Text">v1.0</MudChip>
+            </div>
+            <MudText Typo="Typo.h5" Class="font-weight-bold mt-4">.NET 10</MudText>
+            <MudText Typo="Typo.body2" Class="mud-text-secondary">Framework</MudText>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" lg="3">
+        <MudPaper Elevation="0" Class="stat-card pa-5">
+            <div class="d-flex align-center justify-space-between">
+                <span class="stat-icon"><MudIcon Icon="@Icons.Material.Filled.Web" /></span>
+                <MudChip T="string" Size="Size.Small" Color="Color.Secondary" Variant="Variant.Text">WASM</MudChip>
+            </div>
+            <MudText Typo="Typo.h5" Class="font-weight-bold mt-4">Blazor</MudText>
+            <MudText Typo="Typo.body2" Class="mud-text-secondary">Frontend</MudText>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" lg="3">
+        <MudPaper Elevation="0" Class="stat-card pa-5">
+            <div class="d-flex align-center justify-space-between">
+                <span class="stat-icon"><MudIcon Icon="@Icons.Material.Filled.Palette" /></span>
+                <MudChip T="string" Size="Size.Small" Color="Color.Info" Variant="Variant.Text">9.12</MudChip>
+            </div>
+            <MudText Typo="Typo.h5" Class="font-weight-bold mt-4">MudBlazor</MudText>
+            <MudText Typo="Typo.body2" Class="mud-text-secondary">Interfaz</MudText>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" lg="3">
+        <MudPaper Elevation="0" Class="stat-card pa-5">
+            <div class="d-flex align-center justify-space-between">
+                <span class="stat-icon"><MudIcon Icon="@Icons.Material.Filled.Dns" /></span>
+                <MudChip T="string" Size="Size.Small" Color="Color.Success" Variant="Variant.Text">API</MudChip>
+            </div>
+            <MudText Typo="Typo.h5" Class="font-weight-bold mt-4">Minimal API</MudText>
+            <MudText Typo="Typo.body2" Class="mud-text-secondary">Backend</MudText>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+<MudText Typo="Typo.h6" Class="font-weight-bold mb-3">Accesos rápidos</MudText>
+<MudGrid Spacing="4">
+    <MudItem xs="12" md="4">
+        <MudPaper Elevation="0" Class="stat-card pa-5">
+            <div class="d-flex align-center mb-3">
+                <span class="stat-icon mr-3"><MudIcon Icon="@Icons.Material.Filled.Inventory2" /></span>
+                <MudText Typo="Typo.subtitle1" Class="font-weight-bold">Productos</MudText>
+            </div>
+            <MudText Typo="Typo.body2" Class="mud-text-secondary mb-4">
+                Consulta el catálogo en tiempo real desde la API.
+            </MudText>
+            <MudButton Href="fetchproducts"
+                       Variant="Variant.Text"
+                       Color="Color.Primary"
+                       EndIcon="@Icons.Material.Filled.ArrowForward">
+                Abrir
+            </MudButton>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" md="4">
+        <MudPaper Elevation="0" Class="stat-card pa-5">
+            <div class="d-flex align-center mb-3">
+                <span class="stat-icon mr-3"><MudIcon Icon="@Icons.Material.Filled.AddCircleOutline" /></span>
+                <MudText Typo="Typo.subtitle1" Class="font-weight-bold">Contador</MudText>
+            </div>
+            <MudText Typo="Typo.body2" Class="mud-text-secondary mb-4">
+                Prueba el estado reactivo de un componente Blazor.
+            </MudText>
+            <MudButton Href="counter"
+                       Variant="Variant.Text"
+                       Color="Color.Primary"
+                       EndIcon="@Icons.Material.Filled.ArrowForward">
+                Abrir
+            </MudButton>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" md="4">
+        <MudPaper Elevation="0" Class="stat-card pa-5">
+            <div class="d-flex align-center mb-3">
+                <span class="stat-icon mr-3"><MudIcon Icon="@Icons.Material.Filled.WbSunny" /></span>
+                <MudText Typo="Typo.subtitle1" Class="font-weight-bold">Clima</MudText>
+            </div>
+            <MudText Typo="Typo.body2" Class="mud-text-secondary mb-4">
+                Datos de ejemplo cargados desde un archivo JSON.
+            </MudText>
+            <MudButton Href="weather"
+                       Variant="Variant.Text"
+                       Color="Color.Primary"
+                       EndIcon="@Icons.Material.Filled.ArrowForward">
+                Abrir
+            </MudButton>
+        </MudPaper>
+    </MudItem>
+</MudGrid>

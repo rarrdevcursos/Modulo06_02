@@ -1,0 +1,20 @@
+﻿@page "/not-found"
+
+<PageTitle>No encontrado</PageTitle>
+
+<MudPaper Elevation="0" Class="stat-card pa-10 d-flex flex-column align-center" Style="text-align: center;">
+    <span class="stat-icon" style="width: 4.5rem; height: 4.5rem; border-radius: 20px;">
+        <MudIcon Icon="@Icons.Material.Filled.SearchOff" Style="font-size: 2.25rem;" />
+    </span>
+    <MudText Typo="Typo.h4" Class="font-weight-bold mt-5">Página no encontrada</MudText>
+    <MudText Typo="Typo.body1" Class="mud-text-secondary mt-2" Style="max-width: 420px;">
+        El contenido que buscas no existe o fue movido a otra ubicación.
+    </MudText>
+    <MudButton Href="/"
+               Variant="Variant.Filled"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.Home"
+               Class="mt-6">
+        Volver al inicio
+    </MudButton>
+</MudPaper>

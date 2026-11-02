@@ -1,0 +1,232 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1:focus {
+    outline: none;
+}
+
+code {
+    color: var(--mud-palette-primary);
+    font-size: 0.85em;
+    background: rgba(21, 101, 192, 0.08);
+    padding: 0.15rem 0.4rem;
+    border-radius: 6px;
+}
+
+/* ---------- Layout ---------- */
+.main-content {
+    background-color: var(--mud-palette-background);
+    min-height: 100vh;
+}
+
+.page-container {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 2rem 2rem 3rem;
+}
+
+@media (max-width: 600px) {
+    .page-container {
+        padding: 1.25rem 1rem 2rem;
+    }
+}
+
+.page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+}
+
+.page-eyebrow {
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mud-palette-primary) !important;
+}
+
+/* ---------- Sidebar ---------- */
+.drawer-brand {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    margin-bottom: 0.5rem;
+}
+
+.drawer-brand-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #1565c0, #0ea5a4);
+    box-shadow: 0 6px 16px rgba(14, 165, 164, 0.28);
+    flex-shrink: 0;
+}
+
+.nav-section {
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(203, 213, 225, 0.55) !important;
+    padding: 1rem 1.25rem 0.4rem;
+}
+
+.drawer-footer {
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.drawer-link {
+    color: var(--mud-palette-drawer-text) !important;
+}
+
+/* ---------- Cards ---------- */
+.hero-panel {
+    position: relative;
+    overflow: hidden;
+    border-radius: 22px !important;
+    color: #ffffff;
+    background:
+        radial-gradient(circle at 88% 12%, rgba(56, 189, 248, 0.32), transparent 42%),
+        radial-gradient(circle at 12% 92%, rgba(14, 165, 164, 0.28), transparent 46%),
+        linear-gradient(135deg, #0b1f33 0%, #103a5c 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.hero-chip {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #bae6fd !important;
+    border: 1px solid rgba(125, 211, 252, 0.25) !important;
+}
+
+.stat-card {
+    height: 100%;
+    border: 1px solid var(--mud-palette-divider) !important;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+}
+
+.stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 12px;
+    background: rgba(21, 101, 192, 0.1);
+    color: var(--mud-palette-primary);
+}
+
+/* ---------- Tables ---------- */
+.table-card {
+    border: 1px solid var(--mud-palette-divider) !important;
+    overflow: hidden;
+}
+
+.table-card .mud-table-head .mud-table-cell {
+    background: rgba(15, 23, 42, 0.025);
+    color: var(--mud-palette-text-secondary);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.table-card .mud-table-row:hover {
+    background: rgba(21, 101, 192, 0.045);
+}
+
+/* ---------- Counter ---------- */
+.counter-value {
+    font-size: 5rem !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    letter-spacing: -0.04em;
+    color: var(--mud-palette-primary) !important;
+}
+
+/* ---------- Blazor error UI / loading ---------- */
+#blazor-error-ui {
+    color-scheme: light only;
+    background: #fef3c7;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+.blazor-error-boundary {
+    background: #b32121;
+    padding: 1rem 1rem 1rem 3.7rem;
+    color: white;
+    border-radius: 12px;
+}
+
+.blazor-error-boundary::after {
+    content: 'Ha ocurrido un error.';
+}
+
+.loading-progress {
+    position: absolute;
+    display: block;
+    width: 8rem;
+    height: 8rem;
+    inset: 20vh 0 auto 0;
+    margin: 0 auto 0 auto;
+}
+
+.loading-progress circle {
+    fill: none;
+    stroke: #e2e8f0;
+    stroke-width: 0.6rem;
+    transform-origin: 50% 50%;
+    transform: rotate(-90deg);
+}
+
+.loading-progress circle:last-child {
+    stroke: #1565c0;
+    stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
+    transition: stroke-dasharray 0.05s ease-in-out;
+}
+
+.loading-progress-text {
+    position: absolute;
+    text-align: center;
+    font-weight: 600;
+    color: #1565c0;
+    inset: calc(20vh + 3.25rem) 0 auto 0.2rem;
+}
+
+.loading-progress-text:after {
+    content: var(--blazor-load-percentage-text, 'Cargando');
+}

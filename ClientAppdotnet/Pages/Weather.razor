@@ -1,0 +1,104 @@
+﻿@page "/weather"
+@inject HttpClient Http
+
+<PageTitle>Clima</PageTitle>
+
+<div class="page-header">
+    <div>
+        <MudText Typo="Typo.overline" Class="page-eyebrow">Datos de ejemplo</MudText>
+        <MudText Typo="Typo.h4" Class="font-weight-bold">Pronóstico del clima</MudText>
+        <MudText Typo="Typo.body2" Class="mud-text-secondary">
+            Información obtenida desde <code>sample-data/weather.json</code>.
+        </MudText>
+    </div>
+</div>
+
+@if (error is not null)
+{
+    <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="mb-4">@error</MudAlert>
+}
+else if (forecasts is null)
+{
+    <MudPaper Elevation="0" Class="table-card pa-10 d-flex flex-column align-center">
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+        <MudText Typo="Typo.body2" Class="mud-text-secondary mt-4">Cargando pronóstico…</MudText>
+    </MudPaper>
+}
+else
+{
+    <MudPaper Elevation="0" Class="table-card">
+        <MudTable T="WeatherForecast"
+                  Items="@forecasts"
+                  Hover="true"
+                  Breakpoint="Breakpoint.Sm"
+                  Elevation="0">
+            <HeaderContent>
+                <MudTh>Fecha</MudTh>
+                <MudTh>Temperatura</MudTh>
+                <MudTh>Resumen</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Fecha">
+                    <MudText Typo="Typo.body2" Class="font-weight-medium">@context.Date.ToString("dd MMM yyyy")</MudText>
+                </MudTd>
+                <MudTd DataLabel="Temperatura">
+                    <div class="d-flex align-center">
+                        <MudIcon Icon="@Icons.Material.Filled.Thermostat" Size="Size.Small" Class="mr-2 mud-text-secondary" />
+                        <MudText Typo="Typo.body2" Class="font-weight-medium">@context.TemperatureC °C</MudText>
+                        <MudText Typo="Typo.caption" Class="ml-2 mud-text-secondary">(@context.TemperatureF °F)</MudText>
+                    </div>
+                </MudTd>
+                <MudTd DataLabel="Resumen">
+                    <MudChip T="string"
+                             Size="Size.Small"
+                             Variant="Variant.Filled"
+                             Color="@GetSummaryColor(context.Summary)">
+                        @context.Summary
+                    </MudChip>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudPaper>
+}
+
+@code {
+    private WeatherForecast[]? forecasts;
+    private string? error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        }
+        catch (Exception ex)
+        {
+            error = $"No se pudo cargar el pronóstico: {ex.Message}";
+        }
+    }
+
+    private static Color GetSummaryColor(string? summary) => summary switch
+    {
+        "Freezing" => Color.Info,
+        "Bracing" => Color.Primary,
+        "Chilly" => Color.Secondary,
+        "Cool" => Color.Secondary,
+        "Mild" => Color.Success,
+        "Warm" => Color.Warning,
+        "Hot" => Color.Error,
+        "Sweltering" => Color.Error,
+        "Balmy" => Color.Success,
+        _ => Color.Default
+    };
+
+    public class WeatherForecast
+    {
+        public DateOnly Date { get; set; }
+
+        public int TemperatureC { get; set; }
+
+        public string? Summary { get; set; }
+
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+}
