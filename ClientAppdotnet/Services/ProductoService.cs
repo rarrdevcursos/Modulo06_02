@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using ClientAppdotnet.Models;
 
@@ -9,16 +10,58 @@ public sealed class ProductoService : IProductoService
 
     private readonly HttpClient _http;
     private readonly ILogger<ProductoService> _logger;
+    private readonly TimeSpan _tiempoCache;
+    private readonly SemaphoreSlim _candado = new(1, 1);
 
-    public ProductoService(HttpClient http, ILogger<ProductoService> logger)
+    private IReadOnlyList<Producto>? _cache;
+    private DateTimeOffset _cacheExpira = DateTimeOffset.MinValue;
+
+    public ProductoService(
+        HttpClient http,
+        ILogger<ProductoService> logger,
+        TimeSpan? tiempoCache = null)
     {
         _http = http;
         _logger = logger;
+        _tiempoCache = tiempoCache ?? TimeSpan.FromSeconds(60);
     }
 
     public async Task<IReadOnlyList<Producto>> ObtenerProductosAsync(
+        bool forzarRecarga = false,
         CancellationToken cancellationToken = default)
     {
+        if (!forzarRecarga && _cache is not null && DateTimeOffset.UtcNow < _cacheExpira)
+        {
+            _logger.LogDebug("Catálogo de productos servido desde la caché en memoria.");
+            return _cache;
+        }
+
+        await _candado.WaitAsync(cancellationToken);
+        try
+        {
+            // Otra carga pudo completar la caché mientras se esperaba el candado.
+            if (!forzarRecarga && _cache is not null && DateTimeOffset.UtcNow < _cacheExpira)
+            {
+                return _cache;
+            }
+
+            var productos = await DescargarProductosAsync(cancellationToken);
+
+            _cache = productos;
+            _cacheExpira = DateTimeOffset.UtcNow.Add(_tiempoCache);
+
+            return productos;
+        }
+        finally
+        {
+            _candado.Release();
+        }
+    }
+
+    private async Task<IReadOnlyList<Producto>> DescargarProductosAsync(CancellationToken cancellationToken)
+    {
+        var cronometro = Stopwatch.StartNew();
+
         try
         {
             using var response = await _http.GetAsync("api/productlist", cancellationToken);
@@ -26,11 +69,20 @@ public sealed class ProductoService : IProductoService
             // Lanza HttpRequestException si el estado no es 2xx.
             response.EnsureSuccessStatusCode();
 
-            var json = await response.Content.ReadAsStringAsync(cancellationToken);
+            // Deserialización por secuencia: evita materializar el JSON completo
+            // en una cadena intermedia y reduce las asignaciones.
+            await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
 
-            // La deserialización explícita permite detectar JSON malformado
+            // Deserializar de forma explícita permite detectar JSON malformado
             // y respuestas con una estructura distinta a la esperada.
-            var productos = JsonSerializer.Deserialize<List<Producto>>(json, SerializerOptions);
+            var productos = await JsonSerializer.DeserializeAsync<List<Producto>>(
+                stream, SerializerOptions, cancellationToken);
+
+            cronometro.Stop();
+            _logger.LogInformation(
+                "Catálogo obtenido del API en {Milisegundos} ms ({Bytes} bytes).",
+                cronometro.ElapsedMilliseconds,
+                response.Content.Headers.ContentLength?.ToString() ?? "sin Content-Length");
 
             return productos ?? [];
         }

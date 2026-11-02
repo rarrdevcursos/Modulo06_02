@@ -4,5 +4,10 @@ namespace ClientAppdotnet.Services;
 
 public interface IProductoService
 {
-    Task<IReadOnlyList<Producto>> ObtenerProductosAsync(CancellationToken cancellationToken = default);
+    /// <param name="forzarRecarga">
+    /// Omite la caché en memoria y vuelve a consultar el API.
+    /// </param>
+    Task<IReadOnlyList<Producto>> ObtenerProductosAsync(
+        bool forzarRecarga = false,
+        CancellationToken cancellationToken = default);
 }

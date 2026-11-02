@@ -48,9 +48,9 @@ Disponible en `http://localhost:5267`.
 
 ## Endpoints
 
-| Método | Ruta              | Descripción                    |
-|--------|-------------------|--------------------------------|
-| GET    | `/api/productlist` | Lista de productos de ejemplo  |
+| Método | Ruta              | Descripción                              |
+|--------|-------------------|------------------------------------------|
+| GET    | `/api/productlist` | Lista de productos de ejemplo (caché 30 s) |
 
 Respuesta:
 
@@ -82,6 +82,21 @@ Respuesta:
 - Páginas de inicio, contador, clima y 404.
 - CORS configurado en el servidor para permitir el cliente en desarrollo.
 
+## Rendimiento
+
+- **Compresión de respuestas** (Brotli/Gzip) en el API: el JSON del catálogo pasa de
+  210 a 155 bytes con Brotli (≈ 26 % menos de transferencia).
+- **Caché de salida** (`OutputCache`, 30 s) en `GET /api/productlist`: las peticiones
+  repetidas se sirven desde memoria, sin volver a serializar (cabecera `Age`).
+- **Caché en memoria del cliente** (60 s, configurable en `Api:CacheSegundos`): evita
+  repetir la petición al navegar entre páginas; el botón «Actualizar» fuerza la recarga.
+- **Deserialización por secuencia** (`JsonSerializer.DeserializeAsync`) en lugar de
+  materializar el JSON en una cadena intermedia.
+- **Un único `HttpClient`** con `Timeout` y `CancellationToken` en todas las llamadas.
+
+El detalle del proceso, los problemas resueltos y las decisiones tomadas están en
+[INFORME_COPILOT.md](INFORME_COPILOT.md).
+
 ## Configuración
 
 La URL del API se define en `ClientAppdotnet/wwwroot/appsettings.json`:
@@ -89,9 +104,11 @@ La URL del API se define en `ClientAppdotnet/wwwroot/appsettings.json`:
 ```json
 {
   "Api": {
-    "BaseUrl": "http://localhost:5039/"
+    "BaseUrl": "http://localhost:5039/",
+    "CacheSegundos": 60
   }
 }
 ```
 
-Si cambias los puertos, actualiza la URL en `appsettings.json`.
+Si cambias los puertos, actualiza la URL en `appsettings.json`. `CacheSegundos` controla
+cuánto tiempo el cliente reutiliza el catálogo antes de volver a consultar el API.

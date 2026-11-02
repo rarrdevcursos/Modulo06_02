@@ -15,7 +15,7 @@
     <MudButton Variant="Variant.Outlined"
                Color="Color.Primary"
                StartIcon="@Icons.Material.Filled.Refresh"
-               OnClick="CargarProductosAsync"
+               OnClick="@(() => CargarProductosAsync(forzarRecarga: true))"
                Disabled="@cargando">
         Actualizar
     </MudButton>
@@ -100,14 +100,14 @@ else if (error is null)
 
     protected override Task OnInitializedAsync() => CargarProductosAsync();
 
-    private async Task CargarProductosAsync()
+    private async Task CargarProductosAsync(bool forzarRecarga = false)
     {
         cargando = true;
         error = null;
 
         try
         {
-            productos = await ProductoService.ObtenerProductosAsync();
+            productos = await ProductoService.ObtenerProductosAsync(forzarRecarga);
         }
         catch (ProductoServiceException ex)
         {
