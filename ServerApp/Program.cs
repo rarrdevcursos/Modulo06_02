@@ -1,3 +1,5 @@
+using ServerApp.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors();
@@ -14,9 +16,10 @@ app.MapGet("/api/productlist", () =>
 {
     return new[]
     {
-        new { Id = 1, Nombre = "Portátil", Precio = 1200.50, Stock = 25 },
-        new { Id = 2, Nombre = "Auriculares", Precio = 50.00, Stock = 100 }
+        new Producto(1, "Portátil", 1200.50m, 25, new Categoria(101, "Electrónica")),
+        new Producto(2, "Auriculares", 50.00m, 100, new Categoria(102, "Accesorios"))
     };
 });
 
 app.Run();
+

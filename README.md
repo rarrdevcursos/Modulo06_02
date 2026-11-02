@@ -56,14 +56,27 @@ Respuesta:
 
 ```json
 [
-  { "id": 1, "nombre": "Portátil", "precio": 1200.5, "stock": 25 },
-  { "id": 2, "nombre": "Auriculares", "precio": 50, "stock": 100 }
+  {
+    "id": 1,
+    "nombre": "Portátil",
+    "precio": 1200.50,
+    "stock": 25,
+    "categoria": { "id": 101, "nombre": "Electrónica" }
+  },
+  {
+    "id": 2,
+    "nombre": "Auriculares",
+    "precio": 50.00,
+    "stock": 100,
+    "categoria": { "id": 102, "nombre": "Accesorios" }
+  }
 ]
 ```
 
 ## Funcionalidades
 
 - Catálogo de productos consumido desde la API con `HttpClient`.
+- Cada producto incluye una categoría anidada (`categoria`) expuesta como chip en la tabla.
 - Manejo de errores: códigos HTTP no exitosos, timeout, JSON malformado, estructura inesperada y API caída.
 - Interfaz responsiva con MudBlazor y tema claro/oscuro.
 - Páginas de inicio, contador, clima y 404.

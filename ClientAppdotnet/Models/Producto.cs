@@ -9,4 +9,6 @@ public class Producto
     public double Precio { get; set; }
 
     public int Stock { get; set; }
+
+    public Categoria? Categoria { get; set; }
 }

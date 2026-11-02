@@ -43,6 +43,7 @@ else if (productos is { Count: > 0 })
                   Elevation="0">
             <HeaderContent>
                 <MudTh>Producto</MudTh>
+                <MudTh>Categoría</MudTh>
                 <MudTh>Precio</MudTh>
                 <MudTh>Stock</MudTh>
                 <MudTh>Estado</MudTh>
@@ -58,6 +59,14 @@ else if (productos is { Count: > 0 })
                             <MudText Typo="Typo.caption" Class="mud-text-secondary">SKU-@context.Id.ToString("D4")</MudText>
                         </div>
                     </div>
+                </MudTd>
+                <MudTd DataLabel="Categoría">
+                    <MudChip T="string"
+                             Size="Size.Small"
+                             Variant="Variant.Text"
+                             Color="Color.Info">
+                        @(context.Categoria?.Nombre ?? "Sin categoría")
+                    </MudChip>
                 </MudTd>
                 <MudTd DataLabel="Precio">
                     <MudText Typo="Typo.body2" Class="font-weight-bold">@FormatearPrecio(context.Precio)</MudText>
