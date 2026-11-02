@@ -1,4 +1,3 @@
-using System.Net.Http.Json;
 using System.Text.Json;
 using ClientAppdotnet.Models;
 
@@ -6,6 +5,8 @@ namespace ClientAppdotnet.Services;
 
 public sealed class ProductoService : IProductoService
 {
+    private static readonly JsonSerializerOptions SerializerOptions = new(JsonSerializerDefaults.Web);
+
     private readonly HttpClient _http;
     private readonly ILogger<ProductoService> _logger;
 
@@ -20,23 +21,35 @@ public sealed class ProductoService : IProductoService
     {
         try
         {
-            using var response = await _http.GetAsync("api/products", cancellationToken);
+            using var response = await _http.GetAsync("api/productlist", cancellationToken);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                _logger.LogWarning(
-                    "El API de productos respondió {StatusCode} ({ReasonPhrase}).",
-                    (int)response.StatusCode,
-                    response.ReasonPhrase);
+            // Lanza HttpRequestException si el estado no es 2xx.
+            response.EnsureSuccessStatusCode();
 
-                throw new ProductoServiceException(
-                    $"El API de productos respondió con error {(int)response.StatusCode}.");
-            }
+            var json = await response.Content.ReadAsStringAsync(cancellationToken);
 
-            var productos = await response.Content.ReadFromJsonAsync<List<Producto>>(
-                cancellationToken: cancellationToken);
+            // La deserialización explícita permite detectar JSON malformado
+            // y respuestas con una estructura distinta a la esperada.
+            var productos = JsonSerializer.Deserialize<List<Producto>>(json, SerializerOptions);
 
             return productos ?? [];
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode is not null)
+        {
+            _logger.LogError(
+                ex,
+                "El API de productos respondió con error {StatusCode}.",
+                (int)ex.StatusCode.Value);
+
+            throw new ProductoServiceException(
+                $"El API de productos respondió con error {(int)ex.StatusCode.Value}.", ex);
+        }
+        catch (JsonException ex)
+        {
+            _logger.LogError(ex, "La respuesta del API de productos no es un JSON válido o tiene otra estructura.");
+
+            throw new ProductoServiceException(
+                "La respuesta del API de productos no tiene el formato esperado.", ex);
         }
         catch (TaskCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
@@ -44,20 +57,6 @@ public sealed class ProductoService : IProductoService
 
             throw new ProductoServiceException(
                 "El API de productos tardó demasiado en responder. Inténtalo de nuevo.");
-        }
-        catch (JsonException ex)
-        {
-            _logger.LogError(ex, "La respuesta del API de productos no es JSON válido.");
-
-            throw new ProductoServiceException(
-                "La respuesta del API de productos no tiene el formato esperado.", ex);
-        }
-        catch (NotSupportedException ex)
-        {
-            _logger.LogError(ex, "La respuesta del API de productos no usa un tipo de contenido JSON.");
-
-            throw new ProductoServiceException(
-                "La respuesta del API de productos no tiene un formato JSON válido.", ex);
         }
         catch (HttpRequestException ex)
         {

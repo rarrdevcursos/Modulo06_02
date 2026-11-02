@@ -48,9 +48,9 @@ Disponible en `http://localhost:5267`.
 
 ## Endpoints
 
-| Método | Ruta            | Descripción                    |
-|--------|-----------------|--------------------------------|
-| GET    | `/api/products` | Lista de productos de ejemplo  |
+| Método | Ruta              | Descripción                    |
+|--------|-------------------|--------------------------------|
+| GET    | `/api/productlist` | Lista de productos de ejemplo  |
 
 Respuesta:
 
@@ -64,10 +64,10 @@ Respuesta:
 ## Funcionalidades
 
 - Catálogo de productos consumido desde la API con `HttpClient`.
-- Manejo de errores: códigos HTTP no exitosos, timeout, JSON inválido y API caída.
+- Manejo de errores: códigos HTTP no exitosos, timeout, JSON malformado, estructura inesperada y API caída.
 - Interfaz responsiva con MudBlazor y tema claro/oscuro.
 - Páginas de inicio, contador, clima y 404.
-- CORS configurado en el servidor para los orígenes del cliente.
+- CORS configurado en el servidor para permitir el cliente en desarrollo.
 
 ## Configuración
 
@@ -81,4 +81,4 @@ La URL del API se define en `ClientAppdotnet/wwwroot/appsettings.json`:
 }
 ```
 
-Si cambias los puertos, actualiza también la política CORS en `ServerApp/Program.cs`.
+Si cambias los puertos, actualiza la URL en `appsettings.json`.
